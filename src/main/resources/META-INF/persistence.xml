@@ -3,7 +3,22 @@
              xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
              xsi:schemaLocation="https://jakarta.ee/xml/ns/persistence https://jakarta.ee/xml/ns/persistence/persistence_3_2.xsd"
              version="3.2">
-    <persistence-unit name="default">
+    <persistence-unit name="default" transaction-type="RESOURCE_LOCAL">
 
+        <jta-data-source>java:/MySQLDS</jta-data-source>
+
+        <!-- JPA Provider: Hibernate -->
+        <class>ma.fstt.model.Cart</class>
+        <class>ma.fstt.model.CartItem</class>
+        <class>ma.fstt.model.Order</class>
+        <class>ma.fstt.model.OrderItem</class>
+        <class>ma.fstt.model.Product</class>
+        <class>ma.fstt.model.User</class>
+
+        <properties>
+            <property name="jakarta.persistence.schema-generation.database.action" value="create"/>
+            <property name="hibernate.show_sql" value="true"/>
+            <property name="hibernate.format_sql" value="true"/>
+        </properties>
     </persistence-unit>
 </persistence>
