@@ -1,23 +1,30 @@
 package ma.fstt.service;
 
+import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.enterprise.context.RequestScoped;
-import jakarta.persistence.EntityManager;
-import jakarta.persistence.PersistenceContext;
+import jakarta.inject.Inject;
+import jakarta.inject.Named;
 import ma.fstt.model.Product;
+import ma.fstt.repository.ProductRepository;
 
 import java.util.List;
 
+
+@Named
 @RequestScoped
 public class ProductService {
-    @PersistenceContext
-    private EntityManager em;
+    @Inject
+    ProductRepository productRepository;
 
-    public List<Product> getAllProducts() {
-        return em.createQuery("SELECT p FROM Product p", Product.class)
-                .getResultList();
+    public List<Product> findAll() {
+        return productRepository.findAll();
     }
 
-    public Product findById(Long id) {
-        return em.find(Product.class, id);
+    public List<Product> searchByLabel(String label) {
+        return productRepository.searchByLabel(label);
+    }
+
+    public Product findProductById(Long id) {
+        return productRepository.findById(id);
     }
 }

@@ -6,7 +6,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import ma.fstt.enums.OrderStatusEnum;
 
-import java.sql.Date;
+import java.util.Date;
 import java.util.Set;
 
 @Entity

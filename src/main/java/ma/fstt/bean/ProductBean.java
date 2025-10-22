@@ -1,30 +1,34 @@
 package ma.fstt.bean;
+// ProductBean.java
 
 import jakarta.annotation.PostConstruct;
-import jakarta.enterprise.context.SessionScoped;
+import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Inject;
 import jakarta.inject.Named;
-import lombok.Getter;
-import lombok.Setter;
 import ma.fstt.model.Product;
 import ma.fstt.service.ProductService;
 
-import java.io.Serializable;
 import java.util.List;
 
-@Getter
-@Setter
-@Named
-@SessionScoped
-public class ProductBean implements Serializable {
+@Named("productBean")
+@RequestScoped
+public class ProductBean {
+    private List<Product> products;
+    private String searchTerm;
 
     @Inject
-    private ProductService produitService;
-
-    private List<Product> products;
+    private ProductService service;
 
     @PostConstruct
     public void init() {
-        products = produitService.getAllProducts();
+        products = service.findAll();
     }
+
+    public void search() {
+        products = service.searchByLabel(searchTerm);
+    }
+
+    public List<Product> getProducts() { return products; }
+    public String getSearchTerm() { return searchTerm; }
+    public void setSearchTerm(String searchTerm) { this.searchTerm = searchTerm; }
 }
