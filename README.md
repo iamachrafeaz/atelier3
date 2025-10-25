@@ -1,5 +1,9 @@
 # E-Commerce Web Application
 
+> ⚙️ **This project is an extension of the following repository:**  
+> [https://github.com/iamachrafeaz/Atelier-2](https://github.com/iamachrafeaz/Atelier-2)
+
+
 This is a Java EE-based e-commerce web application that provides a complete solution for managing products, users, shopping carts, and orders.
 
 ## Technologies Used
