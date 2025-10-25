@@ -5,6 +5,7 @@ import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Named;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
+import jakarta.transaction.Transactional;
 import ma.fstt.model.Cart;
 
 @Named
@@ -15,6 +16,7 @@ public class CartRepository {
     private EntityManager em;
 
 
+    @Transactional
     public Long save(Cart object) {
         Cart managedCart = em.merge(object);
         return managedCart.getId();

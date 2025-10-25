@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+
+<h:head>
+   <meta charset="UTF-8"/>
+   <title>#{productBean.selectedProduct.label} - Product</title>
+   <script src="https://cdn.tailwindcss.com"></script>
+   <style>
+      body {
+         background-color: #f5f5f7;
+      }
+      .apple-font {
+         font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", sans-serif;
+      }
+      .glass {
+         backdrop-filter: blur(16px);
+         background-color: rgba(255, 255, 255, 0.65);
+      }
+   </style>
+</h:head>
+
+<ui:include src="../navbar.xhtml"/>
+
+<h:body styleClass="apple-font text-gray-800" style="margin-top: 70px">
+
+   <!-- Toast Messages -->
+   <p:growl id="messages" showDetail="true" life="3000" />
+
+   <!-- Product Section -->
+   <div class="max-w-6xl mx-auto mt-20 grid grid-cols-1 md:grid-cols-2 gap-12 p-6">
+
+      <!-- Product Image -->
+      <div class="flex justify-center items-center">
+         <div class="bg-gray-200 rounded-3xl w-[400px] h-[400px] flex items-center justify-center overflow-hidden">
+            <h:panelGroup rendered="#{not empty productBean.selectedProduct.image}">
+               <h:graphicImage value="/uploads/#{productBean.selectedProduct.image}"
+                               styleClass="object-cover w-full h-full"/>
+            </h:panelGroup>
+            <h:panelGroup rendered="#{empty productBean.selectedProduct.image}">
+               <span class="text-gray-400 text-lg font-medium">No Image</span>
+            </h:panelGroup>
+         </div>
+      </div>
+
+      <!-- Product Details -->
+      <div class="flex flex-col justify-center">
+
+         <h1 class="text-4xl font-semibold mb-3">
+            #{productBean.selectedProduct.label}
+         </h1>
+
+         <p class="text-gray-500 text-lg mb-6">
+            #{productBean.selectedProduct.description}
+         </p>
+
+         <p class="text-3xl font-bold mb-4">
+            $#{productBean.selectedProduct.price}
+         </p>
+
+         <p class="text-sm text-gray-500 mb-8">
+            <h:panelGroup rendered="#{productBean.selectedProduct.inventoryQty gt 0}">
+               In Stock — #{productBean.selectedProduct.inventoryQty} left
+            </h:panelGroup>
+            <h:panelGroup rendered="#{productBean.selectedProduct.inventoryQty le 0}">
+               <span class="text-red-500 font-semibold">Out of Stock</span>
+            </h:panelGroup>
+         </p>
+
+         <!-- Quantity + Add to Cart -->
+         <h:form id="addToCartForm">
+            <div class="flex items-center gap-4 mb-6">
+               <p:commandButton icon="pi pi-minus"
+                                styleClass="w-10 h-10 bg-gray-200 rounded-full hover:bg-gray-300 text-lg"
+                                process="@this"
+                                update="qty"
+                                actionListener="#{productBean.decreaseQty}"/>
+
+               <p:inputText id="qty"
+                            value="#{productBean.quantity}"
+                            readonly="true"
+                            styleClass="w-12 text-center border border-gray-300 rounded-lg p-1"/>
+
+               <p:commandButton icon="pi pi-plus"
+                                styleClass="w-10 h-10 bg-gray-200 rounded-full hover:bg-gray-300 text-lg"
+                                process="@this"
+                                update="qty"
+                                actionListener="#{productBean.increaseQty}"/>
+            </div>
+
+            <p:commandButton value="Add to Cart"
+                             styleClass="bg-black text-white py-3 px-6 rounded-xl hover:bg-gray-800 transition"
+                             action="#{cartBean.addToCart}"
+                             update="messages"/>
+         </h:form>
+      </div>
+   </div>
+
+</h:body>
+</html>

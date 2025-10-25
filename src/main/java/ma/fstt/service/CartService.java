@@ -1,12 +1,12 @@
 package ma.fstt.service;
 
 import jakarta.enterprise.context.ApplicationScoped;
-import jakarta.enterprise.context.SessionScoped;
 import jakarta.faces.application.FacesMessage;
 import jakarta.faces.context.FacesContext;
 import jakarta.inject.Inject;
 import jakarta.inject.Named;
 
+import jakarta.transaction.Transactional;
 import ma.fstt.model.Cart;
 import ma.fstt.model.CartItem;
 import ma.fstt.model.Product;
@@ -14,15 +14,14 @@ import ma.fstt.model.User;
 import ma.fstt.repository.CartRepository;
 import ma.fstt.repository.ProductRepository;
 import ma.fstt.repository.UserRepository;
-import ma.fstt.utils.UserSessionBean;
+import ma.fstt.bean.UserSessionBean;
 
-import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Optional;
-import java.util.Set;
 
 @Named
 @ApplicationScoped
+@Transactional
 public class CartService {
 
     @Inject
@@ -37,25 +36,23 @@ public class CartService {
     @Inject
     UserSessionBean userSession;
 
-    public void saveOrUpdateCart(Long productId, Integer quantity) {
-        User user = findUserBySession(userSession.getCurrentUser());
+    public void saveOrUpdateCart(Product product, Integer quantity) {
+
+        validateProduct(product, quantity);
+
         Cart cart = findOrCreateCartForUser(userSession.getCurrentUser());
-        Product product = validateAndFetchProduct(productId, quantity);
+
         addOrUpdateCartItem(cart, product, quantity);
+
         updateProductInventory(product, product.getInventoryQty() - quantity);
+
         persistCart(cart);
+
+        showInfo("Cart has been saved successfully");
     }
 
     public Cart findByUserId(Long id) {
         return cartRepository.findByUserId(id);
-    }
-
-    private User findUserBySession(User sessionUser) {
-        User user = userRepository.findByEmail(sessionUser.getEmail());
-        if (user == null) {
-            showError("User not found");
-        }
-        return user;
     }
 
     private Cart findOrCreateCartForUser(User user) {
@@ -77,11 +74,7 @@ public class CartService {
         return cart;
     }
 
-    private Product validateAndFetchProduct(Long productId, Integer requestedQty) {
-        Product product = productRepository.findById(productId);
-        if (product == null) {
-            showError("Product not found");
-        }
+    private Product validateProduct(Product product, Integer requestedQty) {
 
         if (product.getInventoryQty() < requestedQty) {
             showError("Insufficient quantity");

@@ -1,0 +1,155 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+
+<h:head>
+    <meta charset="UTF-8"/>
+    <title>ShopLite — Home</title>
+    <h:outputStylesheet>
+        body {
+            background-color: #f5f5f7;
+            font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", sans-serif;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .hero-section {
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 0 1.5rem;
+            padding-top: 6rem;
+        }
+
+        .banner-container {
+            width: 100%;
+            max-width: 48rem;
+            margin-bottom: 2rem;
+        }
+
+        .banner-image {
+            border-radius: 1.5rem;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            object-fit: cover;
+        }
+
+        .hero-title {
+            font-size: 2.25rem;
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+            color: #111827;
+        }
+
+        @media (min-width: 768px) {
+            .hero-title {
+                font-size: 3rem;
+            }
+        }
+
+        .hero-title-brand {
+            color: #000;
+        }
+
+        .hero-description {
+            color: #4b5563;
+            font-size: 1.125rem;
+            margin-bottom: 2.5rem;
+            max-width: 42rem;
+            line-height: 1.75;
+        }
+
+        .button-group {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        @media (min-width: 640px) {
+            .button-group {
+                flex-direction: row;
+            }
+        }
+
+        .ui-button.btn-apple {
+            background-color: #000;
+            border: none;
+            color: white;
+            padding: 0.75rem 2rem;
+            border-radius: 9999px;
+            font-weight: 500;
+            transition: all 0.2s ease;
+        }
+
+        .ui-button.btn-apple:hover {
+            background-color: #333;
+            transform: scale(1.05);
+        }
+
+        .ui-button.btn-outline {
+            background-color: transparent;
+            border: 2px solid #000;
+            color: #000;
+            padding: 0.75rem 2rem;
+            border-radius: 9999px;
+            font-weight: 500;
+            transition: all 0.2s ease;
+        }
+
+        .ui-button.btn-outline:hover {
+            background-color: #000;
+            color: white;
+            transform: scale(1.05);
+        }
+
+        .footer {
+            text-align: center;
+            color: #6b7280;
+            padding: 1.5rem;
+            font-size: 0.875rem;
+            border-top: 1px solid #e5e7eb;
+        }
+    </h:outputStylesheet>
+</h:head>
+
+<h:body>
+    <!-- Include Navbar -->
+    <ui:include src="/navbar.xhtml"/>
+
+    <!-- Hero Section -->
+    <section class="hero-section">
+        <div class="banner-container">
+            <h:graphicImage value="/assets/banner.jpeg"
+                            alt="Shop Banner"
+                            styleClass="banner-image"/>
+        </div>
+
+        <h1 class="hero-title">
+            Welcome to <span class="hero-title-brand">ShopLite</span>
+        </h1>
+
+        <p class="hero-description">
+            Discover quality products at the best prices. Simple, elegant, and built for you.
+        </p>
+
+        <div class="button-group">
+            <p:button value="Browse Products"
+                      outcome="/product/list.xhtml"
+                      styleClass="btn-outline"/>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        © #{homeBean.currentYear} ShopLite. All rights reserved.
+    </footer>
+</h:body>
+</html>

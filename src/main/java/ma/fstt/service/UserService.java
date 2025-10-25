@@ -23,6 +23,7 @@ public class UserService {
                                 String password,
                                 Long phoneNumber,
                                 String address) {
+
         if(!validateUserFields(firstName, lastName, email, password, phoneNumber, address)) return false;
 
         if(checkExistence(email)){
@@ -79,7 +80,9 @@ public class UserService {
             return null;
         }
 
+
         User user = userRepository.findByEmail(email);
+
         if(user == null){
             showError("User not found!");
             return null;

@@ -9,7 +9,6 @@ import jakarta.inject.Named;
 import lombok.*;
 import ma.fstt.model.User;
 import ma.fstt.service.UserService;
-import ma.fstt.utils.UserSessionBean;
 
 import java.io.Serializable;
 

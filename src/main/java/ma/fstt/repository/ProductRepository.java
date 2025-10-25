@@ -4,6 +4,7 @@ import jakarta.enterprise.context.RequestScoped;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.Query;
+import jakarta.transaction.Transactional;
 import ma.fstt.model.Product;
 
 import java.util.List;
@@ -11,11 +12,11 @@ import java.util.List;
 @RequestScoped
 public class ProductRepository {
 
-    @PersistenceContext
+    @PersistenceContext(unitName = "default")
     private EntityManager em;
 
     public void save(Product product) {
-        em.persist(product);
+        em.merge(product);
     }
 
     public List<Product> findAll() {

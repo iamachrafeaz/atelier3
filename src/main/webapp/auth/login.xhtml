@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="jakarta.faces.html"
+      xmlns:p="http://primefaces.org/ui">
+
+<h:head>
+    <title>Sign In</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <style>
+        body {
+            background-color: #f5f5f7;
+        }
+
+        .apple-font {
+            font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", sans-serif;
+        }
+
+        .glass {
+            backdrop-filter: blur(12px);
+            background-color: rgba(255, 255, 255, 0.6);
+        }
+    </style>
+</h:head>
+
+<h:body styleClass="flex items-center justify-center min-h-screen apple-font">
+    <h:form id="loginForm" styleClass="glass shadow-xl rounded-3xl p-10 w-96 text-center border border-gray-200">
+
+        <h1 class="text-3xl font-semibold text-gray-800 mb-6">Sign In</h1>
+
+        <!-- Show error message -->
+        <p:messages id="msgs" showDetail="true" autoUpdate="true"/>
+
+        <!-- Email input -->
+        <p:inputText
+                value="#{loginBean.email}"
+                placeholder="Email"
+                required="true"
+                styleClass="w-full px-4 py-2 rounded-xl border border-gray-300 focus:outline-none focus:ring-2 focus:ring-black transition mb-3"
+        />
+
+        <!-- Password input -->
+        <p:password
+                value="#{loginBean.password}"
+                placeholder="Password"
+                required="true"
+                feedback="false"
+                styleClass="w-full px-4 py-2 rounded-xl border border-gray-300 focus:outline-none focus:ring-2 focus:ring-black transition mb-4"
+        />
+
+        <!-- Submit button -->
+        <p:commandButton
+                value="Continue"
+                action="#{loginBean.login}"
+                ajax="false"
+                styleClass="w-full bg-black text-white py-2 rounded-xl hover:bg-gray-800 transition"
+        />
+
+        <!-- Sign up link -->
+        <p class="text-sm text-gray-600 mt-6">
+            Don’t have an account?
+            <h:link outcome="register" styleClass="text-black hover:underline">Sign up</h:link>
+        </p>
+    </h:form>
+</h:body>
+</html>

@@ -1,9 +1,10 @@
 package ma.fstt.service;
 
-import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Inject;
 import jakarta.inject.Named;
+import jakarta.transaction.Transactional;
+import ma.fstt.bean.UserSessionBean;
 import ma.fstt.enums.OrderStatusEnum;
 import ma.fstt.model.Cart;
 import ma.fstt.model.CartItem;
@@ -19,6 +20,7 @@ import java.util.Set;
 
 @Named
 @RequestScoped
+@Transactional
 public class OrderService {
     @Inject
     OrderRepository orderRepository;
@@ -26,12 +28,15 @@ public class OrderService {
     @Inject
     CartRepository cartRepository;
 
-    public void saveOrder(Long userId)
+    @Inject
+    UserSessionBean userSessionBean;
+
+    public void saveOrder()
     {
         Order order = new Order();
         Set<OrderItem> orderItems = new HashSet<>();
 
-        Cart cart = cartRepository.findByUserId(userId);
+        Cart cart = cartRepository.findByUserId(userSessionBean.getCurrentUser().getId());
 
         for (CartItem item : cart.getCartItems()) {
             OrderItem orderItem = new OrderItem();

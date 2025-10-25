@@ -1,0 +1,285 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+
+<h:head>
+    <meta charset="UTF-8"/>
+    <title>Order ##{orderDetailBean.order.id} Details</title>
+    <h:outputStylesheet>
+        body {
+            background-color: #f5f5f7;
+            font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", sans-serif;
+            color: #1f2937;
+        }
+
+        .order-detail-container {
+            max-width: 1152px;
+            margin: 6rem auto 0;
+            padding: 0 1.5rem;
+        }
+
+        .order-header {
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 2rem;
+        }
+
+        @media (min-width: 768px) {
+            .order-header {
+                flex-direction: row;
+                align-items: center;
+            }
+        }
+
+        .order-title {
+            font-size: 1.875rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+        }
+
+        @media (min-width: 768px) {
+            .order-title {
+                margin-bottom: 0;
+            }
+        }
+
+        .status-badge {
+            padding: 0.25rem 1rem;
+            border-radius: 9999px;
+            font-size: 0.875rem;
+            font-weight: 600;
+            display: inline-block;
+        }
+
+        .status-pending {
+            background-color: #fef3c7;
+            color: #92400e;
+        }
+
+        .status-processing {
+            background-color: #dbeafe;
+            color: #1e40af;
+        }
+
+        .status-completed {
+            background-color: #d1fae5;
+            color: #065f46;
+        }
+
+        .status-canceled {
+            background-color: #fee2e2;
+            color: #991b1b;
+        }
+
+        .status-unknown {
+            background-color: #f3f4f6;
+            color: #1f2937;
+        }
+
+        .product-image {
+            width: 64px;
+            height: 64px;
+            border-radius: 0.75rem;
+            background-color: #e5e7eb;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .product-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 0.75rem;
+        }
+
+        .ui-datatable {
+            background: white;
+            border-radius: 1rem;
+            box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
+            margin-bottom: 1.5rem;
+        }
+
+        .ui-datatable thead th {
+            background: white;
+            color: #374151;
+            font-weight: 500;
+            border-bottom: 1px solid #e5e7eb;
+            padding: 1rem 1.5rem;
+        }
+
+        .ui-datatable tbody td {
+            padding: 1rem 1.5rem;
+            border-bottom: 1px solid #f3f4f6;
+        }
+
+        .ui-datatable tbody tr:hover {
+            background-color: #f9fafb;
+        }
+
+        .order-summary {
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+            align-items: center;
+            gap: 1.5rem;
+            margin-top: 1.5rem;
+        }
+
+        @media (min-width: 768px) {
+            .order-summary {
+                flex-direction: row;
+            }
+        }
+
+        .order-total {
+            font-size: 1.25rem;
+            font-weight: 600;
+        }
+
+        .ui-button.back-btn {
+            background-color: #000;
+            border: none;
+            border-radius: 0.75rem;
+            padding: 0.75rem 1.5rem;
+            font-size: 1rem;
+            color: white;
+        }
+
+        .ui-button.back-btn:hover {
+            background-color: #1f2937;
+        }
+
+        .product-cell {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .product-name {
+            font-weight: 500;
+        }
+
+        .subtotal {
+            font-weight: 600;
+        }
+    </h:outputStylesheet>
+</h:head>
+
+<ui:include src="../navbar.xhtml"/>
+
+<h:body styleClass="apple-font text-gray-800" style="margin-top: 70px">
+
+    <!-- Messages -->
+    <p:growl id="messages" showDetail="true" life="3000"/>
+
+    <f:metadata>
+        <f:viewParam name="id" value="#{orderDetailBean.orderId}"/>
+        <f:event type="preRenderView" listener="#{orderDetailBean.loadOrder}"/>
+    </f:metadata>
+
+    <div class="order-detail-container">
+        <h:panelGroup rendered="#{not empty orderDetailBean.order}">
+            <!-- Header -->
+            <div class="order-header">
+                <h1 class="order-title">Order ##{orderDetailBean.order.id}</h1>
+                <div>
+                    <h:panelGroup rendered="#{orderDetailBean.order.status.name() == 'PENDING'}">
+                        <span class="status-badge status-pending">Pending</span>
+                    </h:panelGroup>
+                    <h:panelGroup rendered="#{orderDetailBean.order.status.name() == 'PROCESSING'}">
+                        <span class="status-badge status-processing">Processing</span>
+                    </h:panelGroup>
+                    <h:panelGroup rendered="#{orderDetailBean.order.status.name() == 'COMPLETED'}">
+                        <span class="status-badge status-completed">Completed</span>
+                    </h:panelGroup>
+                    <h:panelGroup rendered="#{orderDetailBean.order.status.name() == 'CANCELED'}">
+                        <span class="status-badge status-canceled">Canceled</span>
+                    </h:panelGroup>
+                    <h:panelGroup rendered="#{orderDetailBean.order.status.name() != 'PENDING' and orderDetailBean.order.status.name() != 'PROCESSING' and orderDetailBean.order.status.name() != 'COMPLETED' and orderDetailBean.order.status.name() != 'CANCELED'}">
+                        <span class="status-badge status-unknown">Unknown</span>
+                    </h:panelGroup>
+                </div>
+            </div>
+
+            <h:form id="orderDetailForm">
+                <!-- Order Items Table -->
+                <p:dataTable id="orderItemsTable"
+                             value="#{orderDetailBean.order.orderItems}"
+                             var="item"
+                             styleClass="order-items-datatable"
+                             emptyMessage="No items in this order">
+
+                    <!-- Product Column -->
+                    <p:column headerText="Product">
+                        <div class="product-cell">
+                            <div class="product-image">
+                                <h:panelGroup rendered="#{not empty item.product.image}">
+                                    <p:graphicImage value="#{orderDetailBean.getImagePath(item.product.image)}"
+                                                    alt="#{item.product.label}"/>
+                                </h:panelGroup>
+                                <h:panelGroup rendered="#{empty item.product.image}">
+                                    <span style="color: #9ca3af; font-size: 0.875rem;">No Image</span>
+                                </h:panelGroup>
+                            </div>
+                            <span class="product-name">#{item.product.label}</span>
+                        </div>
+                    </p:column>
+
+                    <!-- Price Column -->
+                    <p:column headerText="Price">
+                        <h:outputText value="$#{item.product.price}">
+                            <f:convertNumber pattern="#0.00"/>
+                        </h:outputText>
+                    </p:column>
+
+                    <!-- Quantity Column -->
+                    <p:column headerText="Quantity">
+                        #{item.quantity}
+                    </p:column>
+
+                    <!-- Subtotal Column -->
+                    <p:column headerText="Subtotal">
+                        <span class="subtotal">
+                            <h:outputText value="$#{item.quantity * item.product.price}">
+                                <f:convertNumber pattern="#0.00"/>
+                            </h:outputText>
+                        </span>
+                    </p:column>
+                </p:dataTable>
+
+                <!-- Order Summary -->
+                <div class="order-summary">
+                    <div class="order-total">
+                        Total: <h:outputText value="$#{orderDetailBean.order.total}">
+                        <f:convertNumber pattern="#0.00"/>
+                    </h:outputText>
+                    </div>
+
+                    <p:button value="Back to Orders"
+                              outcome="/order/orderList.xhtml"
+                              styleClass="back-btn"/>
+                </div>
+            </h:form>
+        </h:panelGroup>
+
+        <!-- Order Not Found -->
+        <h:panelGroup rendered="#{empty orderDetailBean.order}">
+            <p style="text-align: center; color: #6b7280; margin-top: 5rem;">
+                Order not found.
+            </p>
+            <div style="text-align: center; margin-top: 1.5rem;">
+                <p:button value="Back to Orders"
+                          outcome="/order/orderList.xhtml"
+                          styleClass="back-btn"/>
+            </div>
+        </h:panelGroup>
+    </div>
+</h:body>
+</html>

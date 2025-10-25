@@ -1,25 +1,27 @@
 package ma.fstt.repository;
 
+import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Named;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
+import jakarta.transaction.Transactional;
 import ma.fstt.model.User;
 
 import java.util.List;
 
-@RequestScoped
+@ApplicationScoped
 @Named
 public class UserRepository {
 
-    @PersistenceContext
+    @PersistenceContext(unitName = "default")
     EntityManager em;
 
+    @Transactional
     public void save(User user) {
         if (user.getId() == null) {
             em.persist(user);
-        }
-        else {
+        } else {
             em.merge(user);
         }
     }
@@ -31,9 +33,11 @@ public class UserRepository {
     }
 
     public User findByEmail(String email) {
-        return em.createQuery("SELECT u FROM User u WHERE u.email = :email", User.class)
+        User user = em.createQuery("SELECT u FROM User u WHERE u.email = :email", User.class)
                 .setParameter("email", email)
                 .getSingleResult();
+
+        return user;
     }
 
     public List<User> findAll() {

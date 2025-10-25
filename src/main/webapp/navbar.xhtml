@@ -1,0 +1,210 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+
+<ui:composition>
+    <h:outputStylesheet>
+        .navbar {
+            background-color: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border-bottom: 1px solid #e5e7eb;
+            padding: 0.75rem 1.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", sans-serif;
+            position: fixed;
+            top: 0;
+            width: 100%;
+            z-index: 1000;
+            box-sizing: border-box;
+        }
+
+        .navbar-logo {
+            font-size: 1.125rem;
+            font-weight: 600;
+            color: #111827;
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+
+        .navbar-logo:hover {
+            color: #000;
+        }
+
+        .navbar-center {
+            display: none;
+        }
+
+        @media (min-width: 768px) {
+            .navbar-center {
+                display: flex;
+                gap: 1.5rem;
+            }
+        }
+
+        .navbar-link {
+            color: #374151;
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+
+        .navbar-link:hover {
+            color: #000;
+        }
+
+        .navbar-right {
+            display: flex;
+            align-items: center;
+            gap: 1.25rem;
+        }
+
+        .cart-icon {
+            position: relative;
+            cursor: pointer;
+        }
+
+        .cart-icon svg {
+            width: 24px;
+            height: 24px;
+            color: #374151;
+            transition: color 0.2s;
+        }
+
+        .cart-icon:hover svg {
+            color: #000;
+        }
+
+        .account-dropdown {
+            position: relative;
+        }
+
+        .account-btn {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            cursor: pointer;
+            background: none;
+            border: none;
+            padding: 0;
+        }
+
+        .account-btn svg {
+            width: 24px;
+            height: 24px;
+            color: #374151;
+            transition: color 0.2s;
+        }
+
+        .account-btn:hover svg {
+            color: #000;
+        }
+
+        .account-name {
+            color: #1f2937;
+            font-size: 0.875rem;
+        }
+
+        .account-label {
+            color: #4b5563;
+            font-size: 0.875rem;
+        }
+
+        .ui-menu.account-menu {
+            background: white;
+            border: 1px solid #e5e7eb;
+            border-radius: 0.75rem;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+            padding: 0.5rem 0;
+            min-width: 10rem;
+        }
+
+        .ui-menu .ui-menuitem-link {
+            padding: 0.5rem 1rem;
+            font-size: 0.875rem;
+            color: #374151;
+            text-decoration: none;
+        }
+
+        .ui-menu .ui-menuitem-link:hover {
+            background-color: #f3f4f6;
+        }
+
+        .ui-menu .ui-menuitem-text {
+            color: #374151;
+        }
+    </h:outputStylesheet>
+
+    <h:form id="navbarForm">
+        <nav class="navbar">
+            <!-- Left: Logo -->
+            <h:link outcome="./index.xhtml" styleClass="navbar-logo">
+                ShopLite
+            </h:link>
+
+            <!-- Center: Navigation Links -->
+            <div class="navbar-center">
+                <h:link outcome="/product/list.xhtml" styleClass="navbar-link">
+                    Products
+                </h:link>
+            </div>
+
+            <!-- Right: Account + Cart -->
+            <div class="navbar-right">
+                <!-- Cart Icon (only shown when user is logged in) -->
+                <h:panelGroup rendered="#{not empty userSessionBean.currentUser}">
+                    <h:link outcome="/cart/cart.xhtml" styleClass="cart-icon">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                             stroke-width="1.8" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round"
+                                  d="M2.25 3h1.386c.51 0 .955.343 1.09.837l.562 2.111m0 0L6.75 14.25A2.25 2.25 0 009 16.5h9.75a2.25 2.25 0 002.183-1.665l1.5-6A2.25 2.25 0 0020.25 6H5.698m-.41 0L4.5 3.75M9 20.25a.75.75 0 110-1.5.75.75 0 010 1.5zm9.75 0a.75.75 0 110-1.5.75.75 0 010 1.5z"/>
+                        </svg>
+                    </h:link>
+                </h:panelGroup>
+
+                <!-- Account Dropdown -->
+                <div class="account-dropdown">
+                    <p:commandButton type="button"
+                                     value="#{empty userSessionBean.currentUser ? 'Account' : userSessionBean.currentUser.firstName.concat(' ').concat(userSessionBean.currentUser.lastName)}"
+                                     styleClass="account-btn ui-button-plain"
+                                     onclick="PF('accountMenu').toggle()"/>
+
+                    <!-- Dropdown Menu -->
+                    <p:menu overlay="true"
+                            trigger="@(.account-btn)"
+                            my="right top"
+                            at="right bottom"
+                            widgetVar="accountMenu"
+                            styleClass="account-menu">
+
+                        <!-- Logged In Menu Items -->
+                        <p:menuitem value="Profile"
+                                    outcome="/index.xhtml"
+                                    rendered="#{not empty userSessionBean.currentUser}"/>
+                        <p:menuitem value="Orders"
+                                    outcome="/order/orderList.xhtml"
+                                    rendered="#{not empty userSessionBean.currentUser}"/>
+                        <p:menuitem value="Log out"
+                                    action="#{userSessionBean.logout}"
+                                    ajax="false"
+                                    rendered="#{not empty userSessionBean.currentUser}"/>
+
+                        <!-- Logged Out Menu Items -->
+                        <p:menuitem value="Sign in"
+                                    outcome="/auth/login.xhtml"
+                                    rendered="#{empty userSessionBean.currentUser}"/>
+                        <p:menuitem value="Register"
+                                    outcome="/auth/register.xhtml"
+                                    rendered="#{empty userSessionBean.currentUser}"/>
+                    </p:menu>
+                </div>
+            </div>
+        </nav>
+    </h:form>
+</ui:composition>
+</html>
